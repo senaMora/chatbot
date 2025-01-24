@@ -1,27 +1,30 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 
-
-
+# Title and description
 st.title("Personal Chatbot")
-st.write("This is your first Streamlit app.")
+st.write("Chat with me! I'm here to answer your questions.")
 
+# Chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-number = st.slider("Pick a number", 0, 100)
-st.write(f"You selected {number}")
+# User input box
+with st.form(key="chat_form", clear_on_submit=True):
+    user_message = st.text_input("Type your message:")
+    submit = st.form_submit_button("Send")
 
+# Process user input
+if submit and user_message:
+    # Append user message to the session state
+    st.session_state.messages.append({"role": "user", "content": user_message})
+    
+    # Generate a simple response (replace this with AI integration like OpenAI API)
+    bot_response = f"You said: {user_message}. How can I assist further?"
+    st.session_state.messages.append({"role": "bot", "content": bot_response})
 
-data = pd.DataFrame(
-    np.random.randn(50, 3),
-    columns=["Monday", "Tuesday", "Wednesday"]
-)
-st.line_chart(data)
-
-
-
-
-st.sidebar.title("Sidebar")
-option = st.sidebar.selectbox("Choose an option", ["Option 1", "Option 2"])
-
-st.write(f"You selected {option}")
+# Display chat history
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        st.write(f"**You:** {message['content']}")
+    else:
+        st.write(f"**Bot:** {message['content']}")
